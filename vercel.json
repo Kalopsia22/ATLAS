@@ -1,0 +1,31 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install --legacy-peer-deps",
+
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "*/10 * * * *"
+    }
+  ],
+
+  "functions": {
+    "api/cron/index.py":         { "runtime": "vercel-python@0.1.0", "maxDuration": 60 },
+    "api/risk-scores/index.py":  { "runtime": "vercel-python@0.1.0", "maxDuration": 10 },
+    "api/risk-scores/[iso3].py": { "runtime": "vercel-python@0.1.0", "maxDuration": 10 },
+    "api/countries/index.py":    { "runtime": "vercel-python@0.1.0", "maxDuration": 10 },
+    "api/history/index.py":      { "runtime": "vercel-python@0.1.0", "maxDuration": 10 }
+  },
+
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin",  "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type,Authorization" }
+      ]
+    }
+  ]
+}
