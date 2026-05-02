@@ -1,0 +1,31 @@
+# ATLAS GeoSentinel — Backend (FastAPI + Prophet)
+# Deploy: cd backend && fly deploy
+
+app = "atlas-backend"
+primary_region = "sin"   # Singapore — closest to India; change to "bom" when available
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8000"
+  PYTHONUNBUFFERED = "1"
+
+# Secrets set via: fly secrets set SUPABASE_URL=... SUPABASE_KEY=...
+# Do NOT put real secrets here.
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = false    # keep always-on — no cold starts
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 100
+    soft_limit = 80
+
+[[vm]]
+  size = "shared-cpu-1x"        # free tier VM
+  memory = "1gb"                # Prophet needs ~500MB; 1GB is safe
